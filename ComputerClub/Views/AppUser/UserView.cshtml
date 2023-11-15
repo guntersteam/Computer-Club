@@ -1,0 +1,65 @@
+﻿@using ComputerClub.ViewModels
+@model UserViewModel
+
+
+@{
+
+}
+
+<div class="card mb-5" style="background-color: #cad5e8;">
+    <div class="card-body">
+        <h5 class="card-title">Пользователь</h5>
+        <p class="card-text">
+            <table class="table table-striped table-bordered">
+                <tbody>
+                    <tr>
+                        <td>Логин</td>
+                        <td>@Model.Login</td>
+                    </tr>
+                    <tr>
+                        <td>Имя</td>
+                        <td>@Model.FirstName</td>
+                    </tr>
+                    <tr>
+                        <td>Фамилия</td>
+                        <td>@Model.LastName</td>
+                    </tr>
+                    <tr>
+                        <td>Пароль</td>
+                        <td>@Model.Password</td>
+                    </tr>
+                    <tr>
+                        <td>Номер телефона</td>
+                        <td>@Model.PhoneNumber</td>
+                    </tr>
+                    <tr>
+                        <td>Электронная почта</td>
+                        <td>@Model.Email</td>
+                    </tr>
+                </tbody>
+            </table>
+        </p>
+    </div>
+</div>
+<table style="width:100%; border-collapse: collapse;">
+    <tr>
+        <th style="padding: 8px; border: 1px solid #ddd;">StartDate</th>
+        <th style="padding: 8px; border: 1px solid #ddd;">EndDate</th>
+        <th style="padding: 8px; border: 1px solid #ddd;">State</th>
+        <th style="padding: 8px; border: 1px solid #ddd;">ComputerModelName</th>
+        <th style="padding: 8px; border: 1px solid #ddd;">ComputerPriceForHour</th>
+        <th style="padding: 8px; border: 1px solid #ddd;">ComputerIsReserved</th>
+    </tr>
+    @foreach (var order in Model.Orders)
+    {
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;">@order.DateTime</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@order.EndTime</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@order.State</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@order.Computer.ModelName</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@order.Computer.PriceForHour</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@order.Computer.IsReserved</td>
+        </tr>
+    }
+</table>
+

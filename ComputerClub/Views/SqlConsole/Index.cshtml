@@ -1,0 +1,103 @@
+﻿@using ComputerClub.ViewModels;
+@using System.Data;
+@model QueryEditorViewModel;
+@{
+
+}
+
+<style>
+    #sqlQuery {
+        width: 100%;
+        text-align: start;
+        font-family: monospace
+    }
+
+    .btn-container {
+        display: flex;
+        margin: 20px;
+        gap: 20px
+    }
+
+    button {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        border: 2px solid #3498db;
+        border-radius: 5px;
+        color: #ffffff;
+        background-color: #3498db;
+        transition: background-color 0.3s ease;
+    }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        button.clear {
+            border-color: #e74c3c;
+            background-color: #e74c3c;
+        }
+
+            button.clear:hover {
+                background-color: #c0392b;
+            }
+
+    mark.keyword {
+        color: yellow;
+        color: black;
+    }
+
+</style>
+
+
+<h2>SQL Query Executor</h2>
+<form method="post" asp-action="RunQuery">
+<textarea id="sqlQuery" name="sqlQuery" type="text" asp-for="Query"></textarea>
+    <div class="btn-container">
+        <button clas="button" type="submit" name="runButton">Run</button>
+        <button class="clear-btn" type="button" onclick="clearTextArea()">Clear</button>
+    </div>
+</form>
+
+@if (Model.Result != null && Model.Result.Rows?.Count > 0)
+{
+    <table id="ResultTable">
+        <tr style="padding: 8px; border: 1px solid #ddd;">
+            @foreach (DataColumn column in Model.Result.Columns)
+            {
+                <th style="padding: 8px; border: 1px solid #ddd;">@column.ColumnName</th>
+            }
+        </tr>
+
+        @foreach (DataRow row in Model.Result.Rows)
+        {
+            <tr style="padding: 8px; border: 1px solid #ddd;">
+                @foreach (DataColumn column in Model.Result.Columns)
+                {
+                    <td style="padding: 8px; border: 1px solid #ddd;">@(row[column.ColumnName] ?? "N/A")</td>
+                }
+            </tr>
+        }
+    </table>
+}
+@if (Model.Result == null)
+{
+    <p>No Information</p>
+}
+
+
+<script src="sql-highlight.js"></script>
+
+<script>
+    function clearTextArea() {
+        document.getElementById('sqlQuery').value = '';
+        var table = document.getElementById('ResultTable');
+        if (table) {
+            table.innerHTML = '';
+        }
+    }
+</script>

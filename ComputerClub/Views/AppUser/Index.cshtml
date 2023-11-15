@@ -1,0 +1,193 @@
+﻿@using DL.Entities
+@model List<AppUser>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "_Layout";
+}
+<style>
+
+    .button-68 {
+        appearance: none;
+        backface-visibility: hidden;
+        background-color: #27ae60;
+        border-radius: 8px;
+        border-style: none;
+        box-shadow: rgba(39, 174, 96, .15) 0 4px 9px;
+        box-sizing: border-box;
+        color: #fff;
+        cursor: pointer;
+        display: inline-block;
+        font-family: Inter,-apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: normal;
+        line-height: 1.5;
+        outline: none;
+        overflow: hidden;
+        padding: 13px 20px;
+        position: relative;
+        text-align: center;
+        text-decoration: none;
+        transform: translate3d(0, 0, 0);
+        transition: all .3s;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        vertical-align: top;
+        white-space: nowrap;
+    }
+
+        .button-68:active {
+            transform: translateY(2px);
+            transition-duration: .35s;
+        }
+
+    .edit-btn {
+        background-color: #85bfe6
+        }
+
+        .delete-btn{
+        background-color: #ed4f4a
+        }
+
+    .button-82-pushable {
+        position: relative;
+        border: none;
+        background: transparent;
+        padding: 0;
+        cursor: pointer;
+        outline-offset: 4px;
+        transition: filter 250ms;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+    }
+
+    .button-82-shadow {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+        background: hsl(0deg 0% 0% / 0.25);
+        will-change: transform;
+        transform: translateY(2px);
+        transition: transform 600ms cubic-bezier(.3, .7, .4, 1);
+    }
+
+    .my-container {
+        display: flex;
+        align-items: center;
+        margin: 100px;
+    }
+
+    .button-82-edge {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+        background: linear-gradient( to left, hsl(340deg 100% 16%) 0%, hsl(340deg 100% 32%) 8%, hsl(340deg 100% 32%) 92%, hsl(340deg 100% 16%) 100% );
+    }
+
+    .button-82-front {
+        display: block;
+        position: relative;
+        padding: 12px 27px;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        color: white;
+        background: hsl(345deg 100% 47%);
+        will-change: transform;
+        transform: translateY(-4px);
+        transition: transform 600ms cubic-bezier(.3, .7, .4, 1);
+    }
+
+    .button-82-pushable:hover {
+        filter: brightness(110%);
+        -webkit-filter: brightness(110%);
+    }
+
+        .button-82-pushable:hover .button-82-front {
+            transform: translateY(-6px);
+            transition: transform 250ms cubic-bezier(.3, .7, .4, 1.5);
+        }
+
+    .button-82-pushable:active .button-82-front {
+        transform: translateY(-2px);
+        transition: transform 34ms;
+    }
+
+    .button-82-pushable:hover .button-82-shadow {
+        transform: translateY(4px);
+        transition: transform 250ms cubic-bezier(.3, .7, .4, 1.5);
+    }
+
+    .button-82-pushable:active .button-82-shadow {
+        transform: translateY(1px);
+        transition: transform 34ms;
+    }
+
+    .button-82-pushable:focus:not(:focus-visible) {
+        outline: none;
+    }
+
+</style>
+
+<table style="width:100%; border-collapse: collapse;">
+    <tr>
+        <th></th>
+        <th style="padding: 8px; border: 1px solid #ddd;">FirstName</th>
+        <th style="padding: 8px; border: 1px solid #ddd;">LastName</th>
+        <th style="padding: 8px; border: 1px solid #ddd;">Login</th>
+        <th style="padding: 8px; border: 1px solid #ddd;">Password</th>
+        <th style="padding: 8px; border: 1px solid #ddd;">Email</th>
+        <th style="padding: 8px; border: 1px solid #ddd;">PhoneNumber</th>
+        <th style="padding: 8px; border: 1px solid #ddd;">View</th>
+
+        <th></th>
+    </tr>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td style="text-align:center">
+                <a asp-controller="AppUser" asp-action="Edit" asp-route-id="@user.AppUserId">
+                    <button class="button-68 edit-btn" role="button">Edit</button>
+                </a>
+                </td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@user.FirstName</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@user.LastName</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@user.Login</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@user.Password</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@user.Email</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@user.PhoneNumber</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">
+                <a asp-controller="AppUser" asp-action="UserView" asp-route-id="@user.AppUserId">
+                    <button class="button-68 edit-btn" role="button">View</button>
+                </a>
+            </td>
+
+            <td style="text-align:center">
+                <a asp-controller="AppUser" asp-action="Delete" asp-route-id="@user.AppUserId">
+                <button class="button-68 delete-btn" role="button">Delete</button>
+                  </a>
+            </td>
+        </tr>
+    }
+</table>
+<div class="my-container">
+    <div class="bB">
+        <form asp-area="" asp-controller="AppUser" asp-action="AddForm" method="get">
+            <button class="button-82-pushable" role="button">
+                <span class="button-82-shadow"></span>
+                <span class="button-82-edge"></span>
+                <span class="button-82-front text">
+                    Add User
+                </span>
+            </button>
+        </form>
+    </div>
+</div>

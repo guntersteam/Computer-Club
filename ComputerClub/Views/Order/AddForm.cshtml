@@ -1,0 +1,29 @@
+﻿@using ComputerClub.ViewModels
+@model OrderViewModel
+
+@{
+    ViewData["Title"] = "Add Order";
+}
+
+<form method="post" asp-action="AddFormp">
+    <div class="form-group">
+        <label>StartDate</label>
+        <input asp-for="StartTime" type= "datetime-local" class="form-control" id="exampleInputPassword1" placeholder="Enter Model name" value="@DateTime.Now" required>
+    </div>
+    <div class="form-group">
+        <label>EndDate</label>
+        <input asp-for="EndTime" type="datetime-local" class="form-control" id="exampleInputPassword1" placeholder="Enter price for hour" value="@DateTime.Now.AddHours(1))" required>
+    </div>
+    <div class="form-group">
+        <label>ComputerName</label>
+        <select asp-for="ModelName" asp-items="Model.Computers" placeholder="@Model.ModelName" class="form-control"></select>
+    </div>
+    <div class="form-group">
+        <label>UserLogin</label>
+        <select asp-for="Email" asp-items="Model.Users" placeholder="@Model.UserName" class="form-control"> </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+@{
+}

@@ -1,0 +1,34 @@
+﻿@using ComputerClub.ViewModels
+@model OrderViewModel
+
+@{
+
+}
+
+<form method="post" asp-action="Edit">
+    <input type="hidden" name="OrderId" value="@Model.OrderId">
+    <div class="form-group">
+        <label>StartTime</label>
+        <input asp-for="StartTime" type="datetime-local" class="form-control"
+               id="exampleInputPassword1"
+               value="@Model.StartTime.ToString("yyyy-MM-ddTHH:mm:ss")" required>
+    </div>
+    <div class="form-group">
+        <label>EndTime</label>
+    <input asp-for="EndTime" type="datetime-local" class="form-control" 
+       id="exampleInputPassword1"
+       value="@Model.EndTime.ToString("yyyy-MM-ddTHH:mm:ss")" required>
+    </div>
+    <div class="form-group">
+        <label asp-for="Email">User</label>
+        <select asp-for="Email" asp-items="Model.Users" placeholder="@Model.UserName" class="form-control"> </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ModelName">Computer</label>
+        <select asp-for="ModelName" asp-items="Model.Computers" placeholder="@Model.ModelName"class="form-control">
+            
+            </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
