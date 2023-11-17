@@ -43,11 +43,11 @@ public class AppUserController : Controller
         var newUser = new AppUser
         {
             Email = userViewModel.Email,
-            Password = userViewModel.Password,
+           // Password = userViewModel.Password,
             FirstName = userViewModel.FirstName,
             LastName = userViewModel.LastName,
             PhoneNumber = userViewModel.PhoneNumber,
-            Login = userViewModel.Login
+            UserName = userViewModel.Login
         };
         _userService.Insert(newUser);
         _userService.Commit();
@@ -72,8 +72,8 @@ public class AppUserController : Controller
             UserId = id,
             FirstName = user.FirstName,
             LastName = user.LastName,
-            Login = user.Login,
-            Password = user.Password,
+            Login = user.UserName,
+           // Password = user.Password,
             Email = user.Email,
             PhoneNumber = user.PhoneNumber
         };
@@ -89,8 +89,8 @@ public class AppUserController : Controller
             {
                 FirstName = userViewModel.FirstName,
                 LastName = userViewModel.LastName,
-                Login = userViewModel.Login,
-                Password = userViewModel.Password,
+                UserName = userViewModel.Login,
+                //Password = userViewModel.Password,
                 Email = userViewModel.Email,
                 PhoneNumber = userViewModel.PhoneNumber
             };
@@ -126,8 +126,8 @@ public class AppUserController : Controller
             UserId = id,
             FirstName = user.FirstName,
             LastName = user.LastName,
-            Login = user.Login,
-            Password = user.Password,
+            Login = user.UserName,
+ //           Password = user.Password,
             Email = user.Email,
             PhoneNumber = user.PhoneNumber,
           //  Orders = orders

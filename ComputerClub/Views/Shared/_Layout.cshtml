@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity;
+@using DL.Entities
+@inject UserManager<AppUser> UserManager
+@inject SignInManager<AppUser> SignInManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -37,6 +42,34 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="SqlConsole" asp-action="Index">SQl console</a>
                         </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item-button">
+                                <form asp-area="" asp-controller="Account" asp-action="Info" method="get">
+                                    <button type="submit" class="nav-link-but nav-link-but-log">Account</button>
+                                </form>
+                            </li>
+                            <li class="nav-item-button">
+                                <form asp-area="" asp-controller="Account" asp-action="LogOut" method="get">
+                                    <button type="submit" class="nav-link-but nav-link-but-log">Log out</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item-button">
+                                <form asp-area="" asp-controller="Account" asp-action="Login" method="get">
+                                    <button type="submit" class="nav-link-but home-btn">Log in</button>
+                                </form>
+                            </li>
+                            <li class="nav-item-button">
+                                <form asp-area="" asp-controller="Account" asp-action="Register" method="get">
+                                    <button type="submit" class="nav-link-but home-btn">Register</button>
+                                </form>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

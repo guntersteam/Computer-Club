@@ -1,0 +1,60 @@
+﻿@using BLL.Services;
+@using ComputerClub.ViewModels;
+@model UserInfoViewModel;
+@inject UserService userService
+
+@{
+    var user = userService.GetByPredicate(user => user.Id == Model.UserId).FirstOrDefault();
+}
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anonymous+Pro&family=Inter:wght@400;700&family=Nunito:wght@200;400&display=swap" rel="stylesheet">
+<link href="~/css/profilePage.css" rel="stylesheet" />
+
+@*
+<video autoplay loop muted class="bg">
+    <source src="/video/background-theme.mp4" type="video/mp4">
+</video>*@
+<div class="d-flex justify-content-center align-items-center" style="height: 100vh; width: 100%">
+    <div class="card bg-secondary text-white" style="width: 70%;">
+        <div class="row no-gutters">
+            <div class="col-md-4 d-flex align-items-center justify-content-center">
+                <label for="profile-image-upload" class="custom-file-upload">
+                    <img src="https://i.pinimg.com/236x/40/75/f3/4075f390f6e4deca77a14e4b0d9aabbc.jpg" class="card-img" alt="Profile Image">
+                </label>
+                <input id="profile-image-upload"  type="file" style="display: none; cursor: pointer">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body" style="height:500px">
+                    <h3 class="card-title" style="padding-bottom: 30px">@user.UserName</h3>
+                    <p class="card-text">First name: @user.FirstName</p>
+                    <p class="card-text">Last name : @user.LastName</p>
+                    <p class="card-text">Email: @user.Email</p>
+                    <p class="card-text">Phone number: @user.PhoneNumber</p>
+
+                    <div style="display: flex; justify-content: space-evenly; margin-top: 30px">
+                        <button class="button-6" role="button">Edit</button>
+                        <button class="button-6" role="button">Orders history</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@*<section class="page-container">
+
+    <div class="img-container">
+        <img />
+    </div>
+    <div class="profile-container">
+        <h3 class="user-username">@user.UserName</h3>
+    </div>
+</section>*@

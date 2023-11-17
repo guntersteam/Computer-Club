@@ -26,6 +26,18 @@ public class UserService : GenericService<AppUser>, IAppUserService
 
     }
 
+    public bool ValidateLogin(string username)
+    {
+        var user = _repository.GetAll().FirstOrDefault(user => user.UserName == username);
+
+        if (user != null)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     //public List<Order> GetByPredicate(Expression<Func<AppUser, bool>>? filter = null, Expression<Func<IQueryable<AppUser>, IOrderedQueryable<AppUser>>>? orderBy = null)
     //{
     //    IQueryable<AppUser> query = _repository.ToTable();
