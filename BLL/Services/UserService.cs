@@ -21,7 +21,7 @@ public class UserService : GenericService<AppUser>, IAppUserService
     {
         var user = _repository.GetAll().FirstOrDefault(user => user.Email == email);
         if (user != null)
-            return user.AppUserId;
+        return 11; // He're need to be UserId
         return 0;
 
     }

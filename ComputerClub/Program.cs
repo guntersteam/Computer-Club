@@ -2,6 +2,8 @@ using BLL.Services;
 using DAL;
 using DAL.Interfaces;
 using DAL.Repositories;
+using DL.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace ComputerClub
@@ -19,6 +21,12 @@ namespace ComputerClub
             builder.Services.AddScoped<ComputerService>();
             builder.Services.AddScoped<OrderService>();
             builder.Services.AddScoped<UserService>();
+
+            builder.Services.AddIdentity<AppUser, IdentityRole>()
+    .AddDefaultTokenProviders()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddSignInManager<SignInManager<AppUser>>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();

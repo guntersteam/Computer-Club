@@ -71,11 +71,11 @@ public class OrderController : Controller
 
         var NewOrder = new Order
         {
-            DateTime = orderViewModel.StartTime,
+            StartDate = orderViewModel.StartTime,
             EndTime = orderViewModel.EndTime,
             State = orderViewModel.State,
             ComputerId = orderViewModel.ComputerId,
-            UserId = orderViewModel.UserId,
+        // i    UserId = orderViewModel.UserId,
         };
         
         _orderService.Insert(NewOrder);
@@ -113,9 +113,9 @@ public class OrderController : Controller
         var orderViewModel = new OrderViewModel
         {
             OrderId = id,
-            StartTime = order.DateTime,
+            StartTime = order.StartDate,
             EndTime = order.EndTime,
-            UserName = _userService.GetById(order.UserId).FirstName + " " + _userService.GetById(order.UserId).LastName,
+            //UserName = _userService.GetById(order.UserId).FirstName + " " + _userService.GetById(order.UserId).LastName,
             ModelName = _computerService.GetById(order.ComputerId).ModelName
 
         };
@@ -159,10 +159,10 @@ public class OrderController : Controller
         var updatedOrder = new Order
         {
             OrderId = orderViewModel.OrderId,
-            DateTime = orderViewModel.StartTime,
+            StartDate = orderViewModel.StartTime,
             EndTime = orderViewModel.EndTime,
             State = orderViewModel.State,
-            UserId = orderViewModel.UserId,
+           // UserId = orderViewModel.UserId,
             ComputerId = orderViewModel.ComputerId
         };
 

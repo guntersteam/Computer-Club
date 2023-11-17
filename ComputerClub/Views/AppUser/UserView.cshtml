@@ -53,7 +53,7 @@
     @foreach (var order in Model.Orders)
     {
         <tr>
-            <td style="padding: 8px; border: 1px solid #ddd;">@order.DateTime</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@order.StartDate</td>
             <td style="padding: 8px; border: 1px solid #ddd;">@order.EndTime</td>
             <td style="padding: 8px; border: 1px solid #ddd;">@order.State</td>
             <td style="padding: 8px; border: 1px solid #ddd;">@order.Computer.ModelName</td>
