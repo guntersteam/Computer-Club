@@ -2,6 +2,7 @@
 using ComputerClub.ViewModels;
 using DL.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
 
 namespace ComputerClub.Controllers;
 
@@ -90,4 +91,10 @@ public class ComputerController : Controller
         return RedirectToAction("Index", "Computer");
     }
 
+    [HttpGet]
+    public IActionResult ComputersView()
+    {
+       var computers = _computerService.GetAll();
+        return View(computers);
+    }
 }
