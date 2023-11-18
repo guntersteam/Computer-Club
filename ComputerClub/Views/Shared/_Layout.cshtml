@@ -1,8 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Identity;
 @using DL.Entities
-@inject UserManager<AppUser> UserManager
-@inject SignInManager<AppUser> SignInManager
+@using DL.Enums
+@inject UserManager<AppUser> userManager;
+@inject SignInManager<AppUser> signInManager;
 
+@{
+    var user = await userManager.GetUserAsync(User);
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,23 +34,35 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="AppUser" asp-action="Index">Users</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Computer" asp-action="Index">Computers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="Index">Orders</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="SqlConsole" asp-action="Index">SQl console</a>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav">
-                        @if (SignInManager.IsSignedIn(User))
+                        @if (signInManager.IsSignedIn(User) && user.Role == UserRole.Admin)
                         {
-                            <li class="nav-item-button">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AppUser" asp-action="Index">Users</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Computer" asp-action="Index">Computers</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="Index">Orders</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="SqlConsole" asp-action="Index">SQl console</a>
+                            </li>
+
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AppUser" asp-action="Index">Users</a>
+                            </li>
+
+                        }
+                    </ul>
+                        <ul class="navbar-nav">
+                        @if (signInManager.IsSignedIn(User))
+                        {
+                            <div class="btncontainer" style="gap:20px">
+                            <li class="nav-item-button" style="gap: 20px">
                                 <form asp-area="" asp-controller="Account" asp-action="Info" method="get">
                                     <button type="submit" class="nav-link-but nav-link-but-log">Account</button>
                                 </form>
@@ -56,6 +72,7 @@
                                     <button type="submit" class="nav-link-but nav-link-but-log">Log out</button>
                                 </form>
                             </li>
+                            </div>
                         }
                         else
                         {

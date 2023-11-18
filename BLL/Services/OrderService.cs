@@ -14,6 +14,16 @@ public class OrderService : GenericService<Order>, IOrderService
     {
     }
 
+    public bool IsOrderPlanned(Order order)
+    {
+        return DateTime.Now < order.StartDate.Date;
+    }
+
+    public bool IsOrderFinished(Order order)
+    {
+        return DateTime.Now > order.EndTime.Date;
+    }
+
     public new Order? GetById(int id)
     {
         var item = _repository.ToTable()
@@ -40,6 +50,40 @@ public class OrderService : GenericService<Order>, IOrderService
             .Include(order => order.Computer)
             .AsQueryable();
         return query.ToList();
+    }
+
+
+    public List<Order> GetPlannedOrders(string userId)
+    {
+        return GetByPredicate(filter: order => order.UserId == userId && IsOrderPlanned(order),
+        orderBy: order => order.OrderBy(
+            x => x.StartDate
+            )
+        );
+    }
+
+    public List<Order> GetFinishedOrder(string userId)
+    {
+        return GetByPredicate(filter: order => order.UserId == userId && IsOrderFinished(order),
+            orderBy: order => order.OrderBy(
+                x => x.StartDate
+                )
+            );
+    }
+    public Order? GetNearestOrder(string userId)
+    {
+        var orders = GetByPredicate(order => order.UserId == userId);
+
+        if (orders == null || !orders.Any())
+        {
+            return null;
+        }
+
+        var nearestOrder = orders.OrderBy(order => order.StartDate)
+                                 .ThenBy(order => order.EndTime)
+                                 .FirstOrDefault();
+
+        return nearestOrder;
     }
 
 }
