@@ -1,50 +1,87 @@
-﻿@using DL.Entities
-@model List<Computer>
+﻿@using ComputerClub.ViewModels
+@using BLL.Services
+@model ComputerParametresViewModel
+@inject ComputerService computerService
 
 @{
-
+    var computers = Model.Computers;
+    var MaxPrice = computerService.GetByPredicate().OrderByDescending(computer => computer.PriceForHour).FirstOrDefault().PriceForHour;
+    var MinPrice = computerService.GetByPredicate().OrderBy(computer => computer.PriceForHour).FirstOrDefault().PriceForHour;
 }
 <link rel="stylesheet" href="~/css/computerspage.css">
 
 
-<button id="filterButton">☰  </button>
+<button id="filterButton">☰ </button>
 <div id="filterSidebar" class="hidden">
-   <h2>Filters</h2>
-</div>
+    <form asp-controller="Computer" asp-action="ComputersView" method="get">
+        <button class="btn-close" id="close-btn" style="float:right"></button>
+        <h2>Search and Filter</h2>
+        <p>Search by model name</p>
+        <input type="text" class="form-control" id="ModelName" name="userOption" placeholder="enter needed computer model">
+        <p>Price selector</p>
+        <div class="filter-group" style="margin-bottom:20px">
+            <input type="number" class="form-control" id="MinNumber" name="MinNumber" placeholder="Enter min value">
+        </div>
+        <div class="filter-group" style="margin-bottom:20px">
+            <input type="number" class="form-control" id="MaxNumber" name="MaxNumber" placeholder="Enter min value">
+        </div>
+        <div class="filter-group" style="margin-bottom:20px">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    Computer state
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li>
+                        <input type="hidden" id="stateValue" name="State" value="false">
+                        <a name="State" class="dropdown-item" href="#" onclick="document.getElementById('dropdownMenuButton').innerText='free'">
+                            Free
+                        </a>
+                    </li>
+                    <li>
+                        <a name="State" class="dropdown-item" href="#" onclick="document.getElementById('dropdownMenuButton').innerText='Reversed'">
+                            Reversed
+                        </a>
+                        <input type="hidden" id="stateValue" name="State" value="true">
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <button class="button-39" role="button" type="submit">Use selected options</button>
 
+    </form>
+</div>
 
 
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4" style="padding-top:50px;">
-@foreach (var computer in Model)
-{
-<div class="card-container" style="margin-left: 20px">
-<div class="computer-container">
-        <div class="banner-image"> 
-            <img src="~/images/defaultComputer.png" class="img-container"/>
+    @foreach (var computer in Model.Computers)
+    {
+        <div class="card-container" style="margin-left: 20px">
+            <div class="computer-container">
+                <div class="banner-image">
+                    <img src="~/images/defaultComputer.png" class="img-container" />
+                </div>
+                <h1> @computer.ModelName</h1>
+                <p>
+                    Price: @computer.PriceForHour
+                </p>
+                <p>
+                    State @(computer.IsReserved ? "Reserved" : "Not Reserved")
+                </p>
+            </div>
+            <div class="button-wrapper">
+                <button class="btn fill">Make an order</button>
+            </div>
         </div>
-        <h1> @computer.ModelName</h1>
-        <p>
-            Price: @computer.PriceForHour
-        </p>
-        <p>
-            State @(computer.IsReserved ? "Reserved" : "Not Reserved")
-        </p>
-    </div>
-    <div class="button-wrapper">
-        <button class="btn fill">Make an order</button>
-    </div>
-    </div>
-}
+    }
 </div>
 
 <script>
-document.getElementById('filterButton').addEventListener('click', function() {
-  document.getElementById('filterSidebar').classList.remove('hidden');
-});
+    document.getElementById('filterButton').addEventListener('click', function () {
+        document.getElementById('filterSidebar').classList.remove('hidden');
+    });
 
-document.getElementById('filterSidebar').addEventListener('click', function() {
-  this.classList.add('hidden');
-});
-
+    document.getElementById('close-btn').addEventListener('click', function () {
+        document.getElementById('filterSidebar').classList.add('hidden');
+    });
 
 </script>
