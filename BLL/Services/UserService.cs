@@ -21,9 +21,21 @@ public class UserService : GenericService<AppUser>, IAppUserService
     {
         var user = _repository.GetAll().FirstOrDefault(user => user.Email == email);
         if (user != null)
-            return user.AppUserId;
+        return 11; // He're need to be UserId
         return 0;
 
+    }
+
+    public bool ValidateLogin(string username)
+    {
+        var user = _repository.GetAll().FirstOrDefault(user => user.UserName == username);
+
+        if (user != null)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     //public List<Order> GetByPredicate(Expression<Func<AppUser, bool>>? filter = null, Expression<Func<IQueryable<AppUser>, IOrderedQueryable<AppUser>>>? orderBy = null)

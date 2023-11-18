@@ -43,11 +43,11 @@ public class AppUserController : Controller
         var newUser = new AppUser
         {
             Email = userViewModel.Email,
-            Password = userViewModel.Password,
+           // Password = userViewModel.Password,
             FirstName = userViewModel.FirstName,
             LastName = userViewModel.LastName,
             PhoneNumber = userViewModel.PhoneNumber,
-            Login = userViewModel.Login
+            UserName = userViewModel.Login
         };
         _userService.Insert(newUser);
         _userService.Commit();
@@ -64,7 +64,7 @@ public class AppUserController : Controller
     }
 
     [HttpGet]
-    public IActionResult Edit(int id)
+    public IActionResult Edit(string id)
     {
         var user = _userService.GetById(id);
         var userViewModel = new UserViewModel
@@ -72,8 +72,8 @@ public class AppUserController : Controller
             UserId = id,
             FirstName = user.FirstName,
             LastName = user.LastName,
-            Login = user.Login,
-            Password = user.Password,
+            Login = user.UserName,
+           // Password = user.Password,
             Email = user.Email,
             PhoneNumber = user.PhoneNumber
         };
@@ -87,11 +87,10 @@ public class AppUserController : Controller
         {
             var updatedUser = new AppUser
             {
-                AppUserId = userViewModel.UserId, 
                 FirstName = userViewModel.FirstName,
                 LastName = userViewModel.LastName,
-                Login = userViewModel.Login,
-                Password = userViewModel.Password,
+                UserName = userViewModel.Login,
+                //Password = userViewModel.Password,
                 Email = userViewModel.Email,
                 PhoneNumber = userViewModel.PhoneNumber
             };
@@ -116,22 +115,22 @@ public class AppUserController : Controller
             && !string.IsNullOrEmpty(userViewModel.PhoneNumber);
     }
 
-    public IActionResult UserView(int id)
+    public IActionResult UserView(string id)
     {
         var user = _userService.GetById(id);
 
-        var orders= _orderService.GetByPredicate(o => o.UserId == user.AppUserId);
+        //var orders= _orderService.GetByPredicate(o => o.UserId == user.AppUserId);
 
         var userViewModel = new UserViewModel
         {
             UserId = id,
             FirstName = user.FirstName,
             LastName = user.LastName,
-            Login = user.Login,
-            Password = user.Password,
+            Login = user.UserName,
+ //           Password = user.Password,
             Email = user.Email,
             PhoneNumber = user.PhoneNumber,
-            Orders = orders
+          //  Orders = orders
         };
 
 

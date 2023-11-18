@@ -74,4 +74,9 @@ public class Repository<T>:IRepository<T> where T : class
         }
         return query.ToList();
     }
+
+    public T? FindById(string Id)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -1,0 +1,52 @@
+﻿@using ComputerClub.ViewModels;
+@model RegisterViewModel
+
+
+<form method ="post" asp-action="Register" enctype="multipart/form-data" class="form">
+    <div class="form-group">
+        <label for="FirstName">First name</label>
+        <input asp-for="FirstName" type="text" class="form-control" id="FirstName" placeholder="Enter first name" required>
+        <div class="invalid-feedback">First name is required</div>
+    </div>
+
+    <div class="form-group">
+        <label for="LastName">Last name</label>
+        <input asp-for="LastName" type="text" class="form-control" id="LastName" placeholder="Enter last name" required>
+        <div class="invalid-feedback">Last name is required</div>
+    </div>
+
+    <div class="form-group">
+        <label for="LastName">Login </label>
+        <input asp-for="Login" type="text" class="form-control" id="Login" placeholder="Enter login" required>
+        <div class="invalid-feedback">Login is required</div>
+    </div>
+
+    <div class="form-group">
+        <label for="">Phone number</label>
+        <input asp-for="PhoneNumber"type="number" class="form-control" id="Age" placeholder="Enter phone number" required>
+        <div class="invalid-feedback">Phone number is required</div>
+    </div>
+
+    <div class="form-group">
+        <label for="Email">Email address</label>
+        <input asp-for="Email" type="email" class="form-control" id="Email" placeholder="Enter email" required>
+        <div class="invalid-feedback">Email is required</div>
+    </div>
+
+    <div class="form-group">
+        <label for="Password">Password</label>
+        <input asp-for="Password" type="password" class="form-control" id="Password" placeholder="Enter password" required>
+        <div class="invalid-feedback">Password is required</div>
+    </div>
+
+    <div class="form-group">
+        <label for="ConfirmPassword">Confirm password</label>
+        <input asp-for="ConfirmPassword" type="password" class="form-control" id="ConfirmPassword" placeholder="Confirm password" required>
+        <div class="invalid-feedback">Password must be confirmed</div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register</button>
+</form>
+
+
+

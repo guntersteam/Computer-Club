@@ -1,0 +1,20 @@
+﻿@using BLL.Services;
+@using ComputerClub.ViewModels
+@model UserOrdersViewModel
+@inject UserService userService
+@inject OrderService orderService
+
+@{
+    var user = userService.GetByPredicate(user => user.Id == Model.UserId).FirstOrDefault();
+}
+
+@{
+    var nearestOrder = orderService.GetNearestOrder(Model.UserId);
+    var plannedAppointments = orderService.GetPlannedOrders(Model.UserId);
+    var finishedAppointments = orderService.GetFinishedOrder(Model.UserId);
+}
+
+
+
+
+

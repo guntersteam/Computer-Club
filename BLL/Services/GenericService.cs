@@ -23,6 +23,10 @@ public class GenericService<T> : IGenericService<T> where T : class
     {
         return _repository.FindById(id);
     }
+    public T? GetById(string id)
+    {
+        return _repository.FindById(id);
+    }
 
     public void Commit()
     {

@@ -1,0 +1,50 @@
+﻿@using DL.Entities
+@model List<Computer>
+
+@{
+
+}
+<link rel="stylesheet" href="~/css/computerspage.css">
+
+
+<button id="filterButton">☰  </button>
+<div id="filterSidebar" class="hidden">
+   <h2>Filters</h2>
+</div>
+
+
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4" style="padding-top:50px;">
+@foreach (var computer in Model)
+{
+<div class="card-container" style="margin-left: 20px">
+<div class="computer-container">
+        <div class="banner-image"> 
+            <img src="~/images/defaultComputer.png" class="img-container"/>
+        </div>
+        <h1> @computer.ModelName</h1>
+        <p>
+            Price: @computer.PriceForHour
+        </p>
+        <p>
+            State @(computer.IsReserved ? "Reserved" : "Not Reserved")
+        </p>
+    </div>
+    <div class="button-wrapper">
+        <button class="btn fill">Make an order</button>
+    </div>
+    </div>
+}
+</div>
+
+<script>
+document.getElementById('filterButton').addEventListener('click', function() {
+  document.getElementById('filterSidebar').classList.remove('hidden');
+});
+
+document.getElementById('filterSidebar').addEventListener('click', function() {
+  this.classList.add('hidden');
+});
+
+
+</script>
