@@ -2,14 +2,20 @@
 @using BLL.Services
 @model ComputerParametresViewModel
 @inject ComputerService computerService
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 @{
+    var modelName = ViewBag.ModelName;
+    var minNumber = ViewBag.MinNumber;
+    var maxNumber = ViewBag.MaxNumber;
+    var state = ViewBag.State;
     var computers = Model.Computers;
     var MaxPrice = computerService.GetByPredicate().OrderByDescending(computer => computer.PriceForHour).FirstOrDefault().PriceForHour;
     var MinPrice = computerService.GetByPredicate().OrderBy(computer => computer.PriceForHour).FirstOrDefault().PriceForHour;
 }
 <link rel="stylesheet" href="~/css/computerspage.css">
-
+@*asp-route-modelName="@modelName"
+          asp-route-minNumber="@minNumber" asp-route-maxNumber="@maxNumber" asp-route-state="@state"*@
 
 <button id="filterButton">☰ </button>
 <div id="filterSidebar" class="hidden">
@@ -17,38 +23,64 @@
         <button class="btn-close" id="close-btn" style="float:right"></button>
         <h2>Search and Filter</h2>
         <p>Search by model name</p>
-        <input type="text" class="form-control" id="ModelName" name="userOption" placeholder="enter needed computer model">
+        <input type="text" class="form-control" id="ModelName" name="modelName" placeholder="enter needed computer model" value="@modelName">
         <p>Price selector</p>
         <div class="filter-group" style="margin-bottom:20px">
-            <input type="number" class="form-control" id="MinNumber" name="MinNumber" placeholder="Enter min value">
+            <input type="number" class="form-control" id="MinNumber" name="minNumber" placeholder="Enter min value" value="@minNumber">
         </div>
         <div class="filter-group" style="margin-bottom:20px">
-            <input type="number" class="form-control" id="MaxNumber" name="MaxNumber" placeholder="Enter min value">
+            <input type="number" class="form-control" id="MaxNumber" name="maxNumber" placeholder="Enter max value" value="@maxNumber">
         </div>
         <div class="filter-group" style="margin-bottom:20px">
             <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <button name="state" value="null" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                     Computer state
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <input type="hidden" id="stateValue" name="state" value="@state">
                     <li>
-                        <input type="hidden" id="stateValue" name="State" value="false">
-                        <a name="State" class="dropdown-item" href="#" onclick="document.getElementById('dropdownMenuButton').innerText='free'">
+                        <a name="State" class="dropdown-item" href="#" onclick="InsertStateValue('free')">
                             Free
                         </a>
                     </li>
                     <li>
-                        <a name="State" class="dropdown-item" href="#" onclick="document.getElementById('dropdownMenuButton').innerText='Reversed'">
-                            Reversed
+                        <a name="State" class="dropdown-item" href="#" onclick="InsertStateValue('Reserved')">
+                            Reserved
                         </a>
-                        <input type="hidden" id="stateValue" name="State" value="true">
                     </li>
                 </ul>
+
             </div>
         </div>
+        <h3 class="mt-5">Sorting parametres</h3>
+        <p class="mb-3">Model name</p>
+        <button class="btn btn-primary mt-4" name="Asc" value="ModelName">
+            ↑ <span class="glyphicon glyphicon-arrow-up"></span>
+        </button>
+        <button class="btn btn-primary mt-4" name="Desc" value="ModelName">
+            ↓ <span class="glyphicon glyphicon-arrow-down"></span>
+        </button>
+        <p class="mb-3">Price for hour</p>
+        <button class="btn btn-primary mt-4" name="Asc" value="PriceForHour">
+            ↑ <span class="glyphicon glyphicon-arrow-up"></span>
+        </button>
+        <button class="btn btn-primary mt-4" name="Desc" value="PriceForHour">
+            ↓ <span class="glyphicon glyphicon-arrow-up"></span>
+        </button>
         <button class="button-39" role="button" type="submit">Use selected options</button>
-
     </form>
+
+@*    <form asp-controller="Computer" asp-action="ComputersView" method="get" asp-route-searchParams="ViewBag.SearchParams">
+        <h3 class="mt-5">Sorting parametres</h3>
+        <p>Model name</p>
+        <button class="btn btn-primary mt-4" name="Asc" value="Model">
+            ↑ <span class="glyphicon glyphicon-arrow-up"></span>
+        </button>
+        <button class="btn btn-primary mt-4">
+            ↓ <span class="glyphicon glyphicon-arrow-down"></span>
+        </button>
+    </form>*@
+
 </div>
 
 
@@ -69,7 +101,7 @@
                 </p>
             </div>
             <div class="button-wrapper">
-                <button class="btn fill">Make an order</button>
+                <button class="btn fill" asp-controller="Computer" asp-action="ComputerOrders" asp-route-id="@computer.ComputerId">Make an order</button>
             </div>
         </div>
     }
@@ -83,5 +115,17 @@
     document.getElementById('close-btn').addEventListener('click', function () {
         document.getElementById('filterSidebar').classList.add('hidden');
     });
+
+    function InsertStateValue(item) {
+        if (item == 'Reserved') {
+            document.getElementById('dropdownMenuButton').innerText = 'Reserved';
+            document.getElementById('stateValue').value = 'true';
+        }
+        else {
+            document.getElementById('dropdownMenuButton').innerText = 'free'
+            document.getElementById('stateValue').value = 'false';
+        }
+    }
+
 
 </script>
