@@ -2,10 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DAL.Repositories;
 
-public class Repository<T>:IRepository<T> where T : class
+public class Repository<T> : IRepository<T> where T : class
 {
     private readonly ApplicationDbContext _context;
     private readonly DbSet<T> _table;
@@ -28,6 +29,17 @@ public class Repository<T>:IRepository<T> where T : class
     }
 
     public void Delete(int id)
+    {
+        var item = _table.Find(id);
+
+        if (item != null)
+        {
+            _table.Remove(item);
+            _context.SaveChanges();
+        }
+    }
+
+    public void Delete(string id)
     {
         var item = _table.Find(id);
 
@@ -77,6 +89,8 @@ public class Repository<T>:IRepository<T> where T : class
 
     public T? FindById(string Id)
     {
-        throw new NotImplementedException();
+        var item = _table.Find(Id);
+
+        return item;
     }
 }

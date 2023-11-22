@@ -1,0 +1,31 @@
+﻿@using ComputerClub.ViewModels
+@model ReviewViewModel;
+
+@{
+}
+<form method="post" asp-action="AddFormp">
+    <div class="form-group">
+        <label>Review text</label>
+        <input asp-for="ReviewText" type="text" style="margin-bottom:10px" class="form-control" id="exampleInputPassword1" placeholder="Enter review text" required>
+    </div>
+    <div class="form-group">
+        <label>Rating</label>
+        <select asp-for="Rating" class="btn btn-secondary dropdown-toggle ">
+            <div class="dropdown-menu ">
+            <option value="" class="dropdown-item">Choose review rating </option>
+                @for (var i = 1; i <= 5; i++)
+                {
+                <option value="@i" class="dropdown-item">@i</option>
+                }
+        </select>
+    </div>
+    <div class="form-group">
+        <label>ComputerName</label>
+        <select asp-for="ModelName" asp-items="Model.Computers" placeholder="@Model.ModelName" class="form-control"></select>
+    </div>
+    <div class="form-group">
+        <label>UserLogin</label>
+        <select asp-for="Email" asp-items="Model.Users" placeholder="@Model.UserName" class="form-control"> </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

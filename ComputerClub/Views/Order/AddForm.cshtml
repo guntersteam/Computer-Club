@@ -22,6 +22,21 @@
         <label>UserLogin</label>
         <select asp-for="Email" asp-items="Model.Users" placeholder="@Model.UserName" class="form-control"> </select>
     </div>
+    <div class="form-group">
+        <label>Payment type</label>
+        <select asp-for="PaymentType" placeholder="@Model.UserName" class="form-control">
+            <option value="0">
+                By card
+            </option>
+            <option value="1">
+                By cash
+            </option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Payment amount</label>
+        <input type="number" asp-for="Amount" placeholder="@Model.UserName" class="form-control"> </input>
+    </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 

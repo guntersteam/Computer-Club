@@ -1,4 +1,5 @@
-﻿using ComputerClub.ViewModels;
+﻿using BLL.Services;
+using ComputerClub.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -7,13 +8,24 @@ namespace ComputerClub.Controllers;
 
 public class SqlConsoleController : Controller
 {
+
+    private readonly UserService _userService;
+
+    public SqlConsoleController(UserService userService)
+    {
+        _userService = userService;
+    }
+
     [HttpGet]
     public IActionResult Index()
     {
+        var users = _userService.GetAll();
+        
         var query = new QueryEditorViewModel
         {
             Query = "",
             Result = null,
+            Users = users
         };
         return View(query);
     }

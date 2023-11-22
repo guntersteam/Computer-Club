@@ -1,0 +1,296 @@
+﻿@using BLL.Interfaces;
+@using BLL.Services;
+@using DL.Entities;
+@using ComputerClub.ViewModels;
+@using DL.Entities;
+@using Microsoft.AspNetCore.Identity;
+@model ComputerOrdersViewModel
+@inject SignInManager<AppUser> signInManager;
+@inject UserService userService;
+
+@{
+    var today = DateTime.Today;
+
+}
+
+@{
+    LinkedList<Order>? linkedList = new LinkedList<Order>();
+    List<Order> sortedList  = new List<Order>();
+}
+<link rel="stylesheet" href="~/css/computerspage.css">
+<link rel="stylesheet" href="~/css/computerOrder.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anonymous+Pro&family=Inter:wght@400;700&family=Montserrat&family=Nunito:wght@200;400&display=swap" rel="stylesheet">
+<div class="wrapper">
+    <div class="card-container" style="margin-left: 20px">
+        <div class="computer-container">
+            <div class="banner-image">
+                <img src="~/images/defaultComputer.png" class="img-container" />
+            </div>
+            <h1>@Model.Computer.ModelName</h1>
+            <p>
+                Price: @Model.Computer.PriceForHour
+            </p>
+            <p>
+                State @(Model.Computer.IsReserved ? "Reserved" : "Not Reserved")
+            </p>
+            <button id="review-modal-btn" class="button-14" role="button">Write an Review</button>
+        </div>
+    </div>
+
+    <div class="comments-section">
+        <h3 class="comments-title">
+            Comments
+            <form asp-controller="Review" asp-action="ComputerOrders">
+                <input type="hidden" name="SortParams.Id" asp-for="@Model.Computer.ComputerId" value="@Model.Computer.ComputerId"/>
+                <input type="hidden" name="SortParams.SortBy"  value="" id="variant-1" />
+                <a  class="arrow-button" onclick="SortBy('Asc')">
+                    ↑
+                </a>
+                <a  class="arrow-button" style="margin-left:10px" onclick="SortBy('Desc')">
+                    ↓
+                </a>
+            </form>
+        </h3>
+        @foreach (var review in Model.Reviews)
+        {
+            var user = userService.GetById(review.UserId);
+
+            <div class="comment" style="display: flex; align-items: start; margin-bottom:10px">
+                <img class="user-img" src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" />
+                <div>
+                    <p>@user.FirstName @user.LastName: (Rating: @review.Rating)</p>
+                    <p>@review.ReviewText</p>
+                </div>
+            </div>
+
+        }
+
+    </div>
+
+</div>
+
+<div id="myModal" class="modal">
+
+
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">&times;</span>
+            <h2>Create an Order</h2>
+        </div>
+        <div class="modal-body">
+            <p class="modal-text">Select date for order</p>
+            <form asp-controller="Order" asp-action="InsertOrder">
+                <input type="hidden" asp-for="@Model.Computer.ComputerId">
+                <input asp-for="@Model.Order.StartDate" type="datetime-local" class="form-control" id="exampleDateInput" style="width:50%">
+                <p class="modal-text">To</p>
+                <input asp-for="@Model.Order.EndTime" type="datetime-local" class="form-control" id="exampleDateInput" style="width:50%">
+                <p class="modal-text">Select payment method</p>
+                <div class="dropdown" style="margin-bottom:40px">
+
+                    <button name="state" value="null" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        Payment method
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <input type="hidden" id="stateValue" asp-for="@Model.Payment.PaymentType">
+                        <li>
+                            <a name="State" class="dropdown-item" href="#" onclick="InsertStateValue('ByCard')" value="Card">
+                                By card
+                            </a>
+                        </li>
+                        <li>
+                            <a name="State" class="dropdown-item" href="#" onclick="InsertStateValue('Cash')" value="Cash">
+                                Cash
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <button class="button-39" role="button" type="submit">Create order</button>
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer">
+    </div>
+</div>
+</div>
+
+
+<div id="review-myModal" class="modal">
+
+
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="review-close">&times;</span>
+            <h2>Create an review</h2>
+        </div>
+        <div class="modal-body">
+            <form asp-controller="Review" asp-action="CreateReview">
+                <input type="hidden" asp-for="@Model.Computer.ComputerId">
+                <div class="form-group">
+                    <p class="modal-text">Review text</p>
+                    <textarea asp-for="@Model.Review.ReviewText" class="form-control" id="exampleTextarea" rows="3" style="margin-bottom: 50px" placeholder="Write an review text">
+
+                    </textarea>
+                </div>
+
+                <div class="dropdown" style="margin-bottom:40px">
+                    <select asp-for="@Model.Review.Rating" class="btn btn-secondary dropdown-toggle ">
+                        <div class="dropdown-menu ">
+                        <option value="" class="dropdown-item">Choose review rating </option>
+                            @for (var i = 1; i <= 5; i++)
+                            {
+                            <option value="@i" class="dropdown-item">@i</option>
+                            }
+                </div>
+                </select>
+        </div>
+        <button class="button-39" role="button" type="submit">
+            Add review
+        </button>
+        </form>
+    </div>
+</div>
+</div>
+</div>
+
+@if (signInManager.IsSignedIn(User))
+{
+    <button id="modal-btn" class="button-82-pushable" role="button">
+        <span class="button-82-shadow"></span>
+        <span class="button-82-edge"></span>
+        <span class="button-82-front text">
+            Make an order
+        </span>
+    </button>
+
+    <div class="day-card-container">
+        @for (int i = 0; i < 6; i++)
+        {
+            var date = today.AddDays(i);
+            var nameOfDay = date.DayOfWeek.ToString();
+            var formattedDate = date.ToString("dd.MM.yyyy");
+            new Order { StartDate = today.AddHours(23).AddMinutes(59), EndTime = today.AddHours(23).AddMinutes(59) };
+            <div class="day-card">
+                <div class="day-information">
+                    <h2 class="day-information-title">@nameOfDay</h2>
+                    <p class="day-information-text">@formattedDate</p>
+                </div>
+                <div class="free-time-container" style="display:flex;justify-content:center;gap:10px">
+                <p>Free time</p>
+                @foreach (var order in Model.Orders.Where(order => order.StartDate.Date == date))
+                {
+                    linkedList.AddLast(order);
+                }
+                @if (linkedList.Count != 0)
+                {
+                    sortedList = new List<Order>(linkedList);
+                    sortedList.Add(new Order { StartDate = date, EndTime = date.AddHours(0) });
+                    sortedList.Add(new Order { StartDate = date.AddHours(23).AddMinutes(59), EndTime = date.AddHours(23).AddMinutes(59) });
+                    sortedList.Sort((x, y) => x.StartDate.CompareTo(y.StartDate));
+                }
+                @for (int j = 0; j < sortedList.Count - 1; j++)
+                {
+                    var gap = sortedList[j + 1].StartDate - sortedList[j].EndTime;
+                    if(gap.TotalHours < 1)
+                    {
+                        continue;
+                    }
+                    <p class="time-text">
+                        @sortedList[j].EndTime.ToString("HH:mm") - @sortedList[j + 1].StartDate.ToString("HH:mm")
+                    </p>
+                }
+                </div>
+                @{
+                    sortedList.Clear();
+                    linkedList.Clear();
+                }
+                <h2 class="day-information-title" style="margin-bottom:20px">Ordered time</h2>
+                <div class="order-information">
+                    @foreach (var item in Model.Orders.Where(order => order.StartDate.Date == date))
+                    {
+                        <div class="time-card">
+                            <p class="time-text">
+                                @item.StartDate.ToString("HH:mm") - @item.EndTime.ToString("HH:mm")
+                            </p>
+                        </div>
+
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
+<script>
+    var modal = document.getElementById('myModal');
+
+
+    var btn = document.getElementById("modal-btn");
+
+
+    var span = document.getElementsByClassName("close")[0];
+
+
+    btn.onclick = function () {
+        modal.style.display = "block";
+    }
+
+
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    var reviewModal = document.getElementById('review-myModal');
+
+
+    var Reviewbtn = document.getElementById("review-modal-btn");
+
+
+    var span = document.getElementsByClassName("review-close")[0];
+
+
+    Reviewbtn.onclick = function () {
+        reviewModal.style.display = "block";
+    }
+
+
+    span.onclick = function () {
+        reviewModal.style.display = "none";
+    }
+
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            reviewModal.style.display = "none";
+        }
+    }
+
+    function InsertStateValue(item) {
+        if (item == 'ByCard') {
+            document.getElementById('dropdownMenuButton').innerText = 'By card';
+            document.getElementById('stateValue').value = 'true';
+        }
+        else {
+            document.getElementById('dropdownMenuButton').innerText = 'cash'
+            document.getElementById('stateValue').value = 'false';
+        }
+    }
+
+    function InsertRatingValue(item) {
+        document.getElementById('dropdownMenuRatingButton').innerText = item
+        //document.getElementById('stateValue').value = item
+
+    }
+
+    function SortBy(sortBy) {
+        document.getElementById('variant-1').value = sortBy;
+        document.forms[2].submit();
+    }
+</script>

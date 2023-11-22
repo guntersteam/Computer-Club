@@ -157,22 +157,21 @@
 
 </style>
 
-<table style="width:100%; border-collapse: collapse;">
-    <tr>
-        <th></th>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+
+<table id="example" class="table table-striped" style="width:100%">
+    <thead>
+        <th>Edit</th>
         <th style="padding: 8px; border: 1px solid #ddd;">StartDate</th>
         <th style="padding: 8px; border: 1px solid #ddd;">EndDate</th>
         <th style="padding: 8px; border: 1px solid #ddd;">State</th>
         <th style="padding: 8px; border: 2px solid #ddd;">UserFirstName</th>
         <th style="padding: 8px; border: 1px solid #ddd;">UserLastName</th>
-        <th style="padding: 8px; border: 1px solid #ddd;">UserEmail</th>
-        <th style="padding: 8px; border: 1px solid #ddd;">UserLogin</th>
-        <th style="padding: 8px; border: 1px solid #ddd;">UserPassword</th>
         <th style="padding: 8px; border: 1px solid #ddd;">ComputerModelName</th>
         <th style="padding: 8px; border: 1px solid #ddd;">ComputerPriceForHour</th>
-        <th style="padding: 8px; border: 1px solid #ddd;">ComputerIsReserved</th>
-        <th></th>
-    </tr>
+        <th>Delete</th>
+    </thead>
     @foreach (var order in Model)
     {
         <tr>
@@ -186,12 +185,8 @@
             <td style="padding: 8px; border: 1px solid #ddd;">@order.State</td>
             <td style="padding: 8px; border: 1px solid #ddd;">@order.User.FirstName</td>
             <td style="padding: 8px; border: 1px solid #ddd;">@order.User.LastName</td>
-            <td style="padding: 8px; border: 1px solid #ddd;">@order.User.Email</td>
-            <td style="padding: 8px; border: 1px solid #ddd;">@order.User.UserName</td>
-            <td style="padding: 8px; border: 1px solid #ddd;">password</td>
             <td style="padding: 8px; border: 1px solid #ddd;">@order.Computer.ModelName</td>
             <td style="padding: 8px; border: 1px solid #ddd;">@order.Computer.PriceForHour</td>
-            <td style="padding: 8px; border: 1px solid #ddd;">@order.Computer.IsReserved</td>
             <td style="text-align:center">
                 <a asp-controller="Order" asp-action="Delete" asp-route-id="@order.OrderId">
                     <button class="button-68 delete-btn" role="button">Delete</button>
@@ -213,3 +208,10 @@
         </form>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    new DataTable('#example');
+</script>

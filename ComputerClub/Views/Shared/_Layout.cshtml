@@ -48,15 +48,16 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="SqlConsole" asp-action="Index">SQl console</a>
                             </li>
-
-                        }
-                        else
-                        {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Computer" asp-action="ComputersView">Computer</a>
+                                <a class="nav-link text-dark" asp-controller="Review" asp-action="Index">Reviews</a>
                             </li>
-
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Payment" asp-action="Index">Payments</a>
+                            </li>
                         }
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Computer" asp-action="ComputersView"> Order Computer</a>
+                            </li>
                     </ul>
                         <ul class="navbar-nav">
                         @if (signInManager.IsSignedIn(User))

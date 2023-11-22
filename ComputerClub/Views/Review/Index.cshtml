@@ -1,17 +1,14 @@
-﻿@using DL.Entities
-@model List<Computer>
+﻿@using DL.Entities;
+@model List<Review>
+
 
 @{
-    ViewBag.Title = "Index";
-    Layout = "_Layout";
-}
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+}
 <style>
 
     .action-button {
-        background-color: #4CAF50;
+        background-color: #4CAF50; /* Green */
         border: 1px;
         border-radius: 5px;
         color: white;
@@ -62,7 +59,7 @@
         margin: 100px;
     }
 
-        .button-68 {
+    .button-68 {
         appearance: none;
         backface-visibility: hidden;
         background-color: #27ae60;
@@ -100,11 +97,11 @@
 
     .edit-btn {
         background-color: #85bfe6
-        }
+    }
 
-        .delete-btn{
+    .delete-btn {
         background-color: #ed4f4a
-        }
+    }
 
     .button-82-edge {
         position: absolute;
@@ -160,41 +157,51 @@
 
 </style>
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+
+
 <table id="example" class="table table-striped" style="width:100%">
     <thead>
-        <th>Edit</th>
-        <th style="padding: 8px; border: 1px solid #ddd;">ModelName</th>
-        <th style="padding: 8px; border: 1px solid #ddd;">PriceForHour</th>
-        <th style="padding: 8px; border: 1px solid #ddd;">IsReserved</th>
-        <th>Delete</th>
+    <th>Edit</th>
+    <th style="padding: 8px; border: 1px solid #ddd;">Review text</th>
+    <th style="padding: 8px; border: 1px solid #ddd;">Rating</th>
+    <th style="padding: 8px; border: 1px solid #ddd;">Computer model</th>
+    <th style="padding: 8px; border: 1px solid #ddd;">User first name</th>
+    <th style="padding: 8px; border: 1px solid #ddd;">User last name</th>
+    <th>Delete</th>
     </thead>
-    @foreach (var computer in Model)
+    @foreach (var item in Model)
     {
         <tr>
             <td style="text-align:center">
-                <a asp-controller="Computer" asp-action="Edit" asp-route-id="@computer.ComputerId">
+                <a asp-controller="Review" asp-action="Edit" asp-route-id="@item.ReviewId">
                     <button class="button-68 edit-btn" role="button">Edit</button>
                 </a>
             </td>
-            <td style="padding: 8px; border: 1px solid #ddd;">@computer.ModelName</td>
-            <td style="padding: 8px; border: 1px solid #ddd;">@computer.PriceForHour</td>
-            <td style="padding: 8px; border: 1px solid #ddd;">@computer.IsReserved</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@item.ReviewText</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@item.Rating</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@item.Computer.ModelName</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@item.User.FirstName</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@item.User.LastName</td>
+
             <td style="text-align:center">
-                <a asp-controller="Computer" asp-action="Delete" asp-route-id="@computer.ComputerId">
+                <a asp-controller="Review" asp-action="Delete" asp-route-id="@item.ReviewId">
                     <button class="button-68 delete-btn" role="button">Delete</button>
                 </a>
             </td>
         </tr>
     }
 </table>
+
 <div class="my-container">
     <div class="bB">
-        <form asp-area="" asp-controller="Computer" asp-action="AddForm" method="get">
+        <form asp-area="" asp-controller="Review" asp-action="AddForm" method="get">
             <button class="button-82-pushable" role="button">
                 <span class="button-82-shadow"></span>
                 <span class="button-82-edge"></span>
                 <span class="button-82-front text">
-                    Add Computer
+                    Add review
                 </span>
             </button>
         </form>

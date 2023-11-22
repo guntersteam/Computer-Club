@@ -1,3 +1,44 @@
-﻿
+﻿@using BLL.Services;
+@using ComputerClub.ViewModels;
+@model OrderHistoryViewModel;
+@inject ComputerService computerService
+@inject PaymentService paymentService
 @{
+
+}
+
+<style>
+    .order-container{
+    display:flex;
+    justify-content:center;
+    margin:20px 0;
+    }
+    
+    .order-card{
+        height: 200px;
+        min-width:800px;
+        border-radius: 5px;
+        background-color: gray;
+
+    }
+</style>
+<h2>Orders</h2>
+@if(Model.Orders.Count > 0)
+{
+    @foreach (var order in Model.Orders)
+    {
+        var computer = computerService.GetById(order.ComputerId);
+        var payment = paymentService.GetByPredicate(filter: payment => payment.OrderId == order.OrderId).FirstOrDefault();
+        <div class="order-container">
+            <div class="order-card" >
+                <div>
+                    <h2>Order</h2>
+                    <p> Date: @order.StartDate - @order.EndTime</p>
+                    <p>Computer @computer.ModelName</p>
+                    <p>Amount: @payment.Amount </p>
+                    <a type="button" asp-route-id="@order.OrderId" asp-controller="Account" asp-action="TakeAnFile">Create a pdf</a>
+                </div>
+            </div>
+        </div>
+    }
 }

@@ -1,4 +1,6 @@
 ﻿using DL.Entities;
+using DL.Enums;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace ComputerClub.ViewModels;
@@ -15,6 +17,9 @@ public class UserViewModel
     [Required]
     public string Login { get; set; }
 
+    [Required] 
+    public UserRole Role { get; set; }
+
     [Required]
     [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 7)]
     //[DataType(DataType.Password)]
@@ -23,6 +28,7 @@ public class UserViewModel
     [Required]
     [DataType(DataType.EmailAddress)]
     public string Email { get; set; }
+
 
     [Required]
     [DataType(DataType.PhoneNumber)]

@@ -1,17 +1,14 @@
 ﻿@using DL.Entities
-@model List<Computer>
+@model List<Payment>
 
 @{
     ViewBag.Title = "Index";
     Layout = "_Layout";
 }
-
-<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
 <style>
 
     .action-button {
-        background-color: #4CAF50;
+        background-color: #4CAF50; /* Green */
         border: 1px;
         border-radius: 5px;
         color: white;
@@ -62,7 +59,7 @@
         margin: 100px;
     }
 
-        .button-68 {
+    .button-68 {
         appearance: none;
         backface-visibility: hidden;
         background-color: #27ae60;
@@ -100,11 +97,11 @@
 
     .edit-btn {
         background-color: #85bfe6
-        }
+    }
 
-        .delete-btn{
+    .delete-btn {
         background-color: #ed4f4a
-        }
+    }
 
     .button-82-edge {
         position: absolute;
@@ -160,46 +157,42 @@
 
 </style>
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+
 <table id="example" class="table table-striped" style="width:100%">
     <thead>
-        <th>Edit</th>
-        <th style="padding: 8px; border: 1px solid #ddd;">ModelName</th>
-        <th style="padding: 8px; border: 1px solid #ddd;">PriceForHour</th>
-        <th style="padding: 8px; border: 1px solid #ddd;">IsReserved</th>
-        <th>Delete</th>
+    <th>Edit</th>
+    <th style="padding: 8px; border: 1px solid #ddd;">Payment date</th>
+    <th style="padding: 8px; border: 1px solid #ddd;">Payment method</th>
+    <th style="padding: 8px; border: 1px solid #ddd;">User first name</th>
+    <th style="padding: 8px; border: 1px solid #ddd;">User last name</th>
+    <th style="padding: 8px; border: 1px solid #ddd;">Computer model name</th>
+    <th style="padding: 8px; border: 1px solid #ddd;">Computer price for hour</th>
+    <th>Delete</th>
     </thead>
-    @foreach (var computer in Model)
+    @foreach (var payment in Model)
     {
         <tr>
             <td style="text-align:center">
-                <a asp-controller="Computer" asp-action="Edit" asp-route-id="@computer.ComputerId">
+                <a asp-controller="Payment" asp-action="Edit" asp-route-id="@payment.PaymentId">
                     <button class="button-68 edit-btn" role="button">Edit</button>
                 </a>
             </td>
-            <td style="padding: 8px; border: 1px solid #ddd;">@computer.ModelName</td>
-            <td style="padding: 8px; border: 1px solid #ddd;">@computer.PriceForHour</td>
-            <td style="padding: 8px; border: 1px solid #ddd;">@computer.IsReserved</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@payment.PaymentDate</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@payment.PaymentType</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@payment.Order.User.FirstName</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@payment.Order.User.LastName</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@payment.Order.Computer.ModelName</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">@payment.Order.Computer.PriceForHour</td>
             <td style="text-align:center">
-                <a asp-controller="Computer" asp-action="Delete" asp-route-id="@computer.ComputerId">
+                <a asp-controller="Payment" asp-action="Delete" asp-route-id="@payment.PaymentId">
                     <button class="button-68 delete-btn" role="button">Delete</button>
                 </a>
             </td>
         </tr>
     }
 </table>
-<div class="my-container">
-    <div class="bB">
-        <form asp-area="" asp-controller="Computer" asp-action="AddForm" method="get">
-            <button class="button-82-pushable" role="button">
-                <span class="button-82-shadow"></span>
-                <span class="button-82-edge"></span>
-                <span class="button-82-front text">
-                    Add Computer
-                </span>
-            </button>
-        </form>
-    </div>
-</div>
 
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>

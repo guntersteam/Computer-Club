@@ -58,8 +58,15 @@
 <form method="post" asp-action="RunQuery">
 <textarea id="sqlQuery" name="sqlQuery" type="text" asp-for="Query"></textarea>
     <div class="btn-container">
-        <button clas="button" type="submit" name="runButton">Run</button>
+        <button class="button" type="submit" name="runButton">Run</button>
         <button class="clear-btn" type="button" onclick="clearTextArea()">Clear</button>
+        <button id="querySelect" onclick="submitForm('SELECT ModelName,IsReserved FROM Computer')"> availability of computers</button>
+        <button id="querySelect" onclick="submitForm('SELECT TOP 5 ModelName, COUNT(OrderId) as OrderCount FROM Computer c JOIN [Order] o ON c.ComputerId = o.ComputerId GROUP BY ModelName ORDER BY OrderCount DESC')">
+           Top 5 computers
+        </button>
+        <button id="querySelect" onclick="submitForm('SELECT DISTINCT c.ModelName, c.IsReserved, o.StartDate, o.EndTime, p.PaymentDate, p.PaymentType FROM Computer c JOIN [Order] o ON c.ComputerId = o.ComputerId JOIN Payment p ON o.OrderId = p.OrderId')">
+            Use of computers
+        </button>
     </div>
 </form>
 
@@ -99,5 +106,10 @@
         if (table) {
             table.innerHTML = '';
         }
+    }
+
+    function submitForm(querySelect) {
+        document.getElementById('sqlQuery').value = querySelect;
+        document.forms[0].submit();
     }
 </script>
