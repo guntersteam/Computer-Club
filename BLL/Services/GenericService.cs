@@ -52,6 +52,12 @@ public class GenericService<T> : IGenericService<T> where T : class
         Commit();
     }
 
+    public void Delete(string id)
+    {
+        _repository.Delete(id);
+        Commit();
+    }
+
     public void Update(T item)
     {
         _repository.Update(item);

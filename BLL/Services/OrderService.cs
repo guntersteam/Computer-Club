@@ -34,7 +34,7 @@ public class OrderService : GenericService<Order>, IOrderService
         return item;
     }
 
-    public List<Order> GetByPredicate(Expression<Func<Order, bool>>? filter = null, Expression<Func<IQueryable<Order>, IOrderedQueryable<Order>>>? orderBy = null)
+    public List<Order>? GetByPredicate(Expression<Func<Order, bool>>? filter = null, Expression<Func<IQueryable<Order>, IOrderedQueryable<Order>>>? orderBy = null)
     {
         IQueryable<Order> query = _repository.ToTable();
         if (filter != null)

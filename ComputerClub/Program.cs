@@ -1,3 +1,4 @@
+using BLL.Interfaces;
 using BLL.Services;
 using DAL;
 using DAL.Interfaces;
@@ -5,6 +6,7 @@ using DAL.Repositories;
 using DL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Infrastructure;
 
 namespace ComputerClub
 {
@@ -21,6 +23,11 @@ namespace ComputerClub
             builder.Services.AddScoped<ComputerService>();
             builder.Services.AddScoped<OrderService>();
             builder.Services.AddScoped<UserService>();
+            builder.Services.AddScoped<PaymentService>();
+            builder.Services.AddScoped<ReviewService>();
+
+            QuestPDF.Settings.License = LicenseType.Community;
+
 
             builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddDefaultTokenProviders()

@@ -11,18 +11,17 @@ using System.Threading.Tasks;
 
 namespace BLL.Services;
 
-public class UserService : GenericService<AppUser>, IAppUserService
+public class UserService : GenericService<AppUser>, IUserService
 {
     public UserService(IRepository<AppUser> repository) : base(repository)
     {
     }
 
-    public int FindByEmail(string email)
+    public string FindByEmail(string email)
     {
         var user = _repository.GetAll().FirstOrDefault(user => user.Email == email);
-        if (user != null)
-        return 11; // He're need to be UserId
-        return 0;
+
+        return user.Id;
 
     }
 
