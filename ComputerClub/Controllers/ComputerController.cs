@@ -1,10 +1,13 @@
-﻿using BLL.Services;
+﻿using BLL.Interfaces;
+using BLL.Services;
 using ComputerClub.ViewModels;
 using DL.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
+using System.Security.Claims;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace ComputerClub.Controllers;
@@ -12,10 +15,13 @@ namespace ComputerClub.Controllers;
 public class ComputerController : Controller
 {
     private readonly ComputerService _computerService;
-
-    public ComputerController(ComputerService computerService)
+    private readonly OrderService _orderService;
+    private readonly ReviewService _reviewService;
+    public ComputerController(ComputerService computerService, OrderService orderService, ReviewService reviewService)
     {
         _computerService = computerService;
+        _orderService = orderService;
+        _reviewService = reviewService;
     }
 
     [HttpGet]
@@ -178,7 +184,7 @@ public class ComputerController : Controller
                     if (pair.Key == "Asc")
                         query = _computerService.GetByPredicate().OrderBy(model => model.ModelName).Intersect(savedQuery).AsQueryable();
                     else
-                       query = _computerService.GetByPredicate().OrderByDescending(model => model.ModelName).Intersect(savedQuery).AsQueryable();
+                        query = _computerService.GetByPredicate().OrderByDescending(model => model.ModelName).Intersect(savedQuery).AsQueryable();
                     break;
                 case "PriceForHour":
                     if (pair.Key == "Asc")
@@ -205,16 +211,38 @@ public class ComputerController : Controller
         return View(computerParams);
     }
 
-    //[HttpPost]
-    //public IActionResult GiveFilteredComputers(string userOption)
-    //{
-    //    var computers = _computerService.GetAll();
+    [HttpGet]
+    public IActionResult ComputerOrders(int id)
+    {
+        var listReviews = new List<Review>();
+        if (TempData["listReviews"] != null)
+        {
+           listReviews = JsonSerializer.Deserialize<List<Review>>(TempData["listReviews"].ToString());
+        }
 
-    //    if (userOption != null)
-    //    {
-    //        var sortedComputers = _computerService.GetByPredicate().Where(computer => computer.ModelName == userOption).ToList();
-    //        return View(sortedComputers);
-    //    }
-    //    return View(computers);
-    //}
+        var reviews = new List<Review>();
+        var computer = _computerService.GetById(id);
+        var orders = _orderService.GetByPredicate()
+            .Where(order => order.ComputerId == id)
+            .ToList();
+        if (listReviews.IsNullOrEmpty())
+        {
+            reviews = _reviewService.GetByPredicate()
+                .Where(review => review.ComputerId == id)
+                .ToList();
+        }
+        else
+        {
+            reviews = listReviews;
+        }
+
+        var computerOrders = new ComputerOrdersViewModel
+        {
+            Computer = computer,
+            Orders = orders,
+            Reviews = reviews
+        };
+        return View(computerOrders);
+    }
+
 }

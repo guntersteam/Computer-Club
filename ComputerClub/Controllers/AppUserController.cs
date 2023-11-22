@@ -1,6 +1,7 @@
 ﻿using BLL.Services;
 using ComputerClub.ViewModels;
 using DL.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
 
@@ -10,11 +11,13 @@ public class AppUserController : Controller
 {
     private readonly UserService _userService;
     private readonly OrderService _orderService;
+    private readonly UserManager<AppUser> _userManager;
 
-    public AppUserController(UserService userService, OrderService orderService)
+    public AppUserController(UserService userService, OrderService orderService, UserManager<AppUser> userManager) 
     {
         _userService = userService;
         _orderService = orderService;
+        _userManager = userManager;
     }
 
     [HttpGet]
@@ -28,12 +31,6 @@ public class AppUserController : Controller
         return View(users);
     }
 
-    [HttpGet]
-    public IActionResult AddForm()
-    {
-        return View();
-    }
-
     [HttpPost]
     public async Task<IActionResult> InsertInto(UserViewModel userViewModel)
     {
@@ -43,20 +40,21 @@ public class AppUserController : Controller
         var newUser = new AppUser
         {
             Email = userViewModel.Email,
-           // Password = userViewModel.Password,
             FirstName = userViewModel.FirstName,
             LastName = userViewModel.LastName,
             PhoneNumber = userViewModel.PhoneNumber,
-            UserName = userViewModel.Login
+            UserName = userViewModel.Login,
+            Role = userViewModel.Role,
         };
-        _userService.Insert(newUser);
+
+        var result = await _userManager.CreateAsync(newUser, userViewModel.Password);
         _userService.Commit();
 
         return RedirectToAction("Index", "AppUser");
     }
 
     [HttpGet]
-    public IActionResult Delete(int id)
+    public IActionResult Delete(string id)
     {
         _userService.Delete(id);
         _userService.Commit();
@@ -73,7 +71,6 @@ public class AppUserController : Controller
             FirstName = user.FirstName,
             LastName = user.LastName,
             Login = user.UserName,
-           // Password = user.Password,
             Email = user.Email,
             PhoneNumber = user.PhoneNumber
         };
@@ -83,6 +80,7 @@ public class AppUserController : Controller
     [HttpPost]
     public IActionResult Edit(UserViewModel userViewModel)
     {
+        var user = _userService.GetById(userViewModel.UserId);
         if (IsCorrect(userViewModel))
         {
             var updatedUser = new AppUser
@@ -90,12 +88,11 @@ public class AppUserController : Controller
                 FirstName = userViewModel.FirstName,
                 LastName = userViewModel.LastName,
                 UserName = userViewModel.Login,
-                //Password = userViewModel.Password,
                 Email = userViewModel.Email,
                 PhoneNumber = userViewModel.PhoneNumber
             };
 
-             _userService.Update(updatedUser);
+             var result = _userManager.UpdateAsync(updatedUser);
             _userService.Commit();
 
             return RedirectToAction("Index", "AppUser");
@@ -110,7 +107,6 @@ public class AppUserController : Controller
             && !string.IsNullOrEmpty(userViewModel.FirstName)
             && !string.IsNullOrEmpty(userViewModel.LastName)
             && !string.IsNullOrEmpty(userViewModel.Login)
-            && !string.IsNullOrEmpty(userViewModel.Password)
             && !string.IsNullOrEmpty(userViewModel.Email)
             && !string.IsNullOrEmpty(userViewModel.PhoneNumber);
     }

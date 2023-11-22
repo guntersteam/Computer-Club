@@ -4,6 +4,8 @@ using ComputerClub.ViewModels;
 using DL.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Net.Mail;
+using System.Security.Claims;
 
 namespace ComputerClub.Controllers;
 
@@ -12,12 +14,13 @@ public class OrderController : Controller
     private readonly OrderService _orderService;
     private readonly ComputerService _computerService;
     private readonly UserService _userService;
-
-    public OrderController(OrderService orderService, ComputerService computerService, UserService userService)
+    private readonly PaymentService _paymentService;
+    public OrderController(OrderService orderService, ComputerService computerService, UserService userService, PaymentService paymentService)
     {
         _orderService = orderService;
         _computerService = computerService;
         _userService = userService;
+        _paymentService = paymentService;
     }
 
     public IActionResult Index()
@@ -75,12 +78,22 @@ public class OrderController : Controller
             EndTime = orderViewModel.EndTime,
             State = orderViewModel.State,
             ComputerId = orderViewModel.ComputerId,
-        // i    UserId = orderViewModel.UserId,
+            UserId = orderViewModel.UserId,
         };
         
         _orderService.Insert(NewOrder);
         _orderService.Commit();
 
+        var newPayment = new Payment
+        {
+            PaymentType = orderViewModel.PaymentType,
+            Amount = orderViewModel.Amount,
+            OrderId = NewOrder.OrderId,
+            PaymentDate = DateTime.Now
+        };
+
+        _paymentService.Insert(newPayment);
+        _paymentService.Commit();
         return RedirectToAction("Index", "Order");
     }
 
@@ -101,8 +114,17 @@ public class OrderController : Controller
             _computerService.Commit();
         }
 
+        var payment = _paymentService.GetByPredicate(filter: payment => payment.OrderId == order.OrderId).FirstOrDefault();
+
         _orderService.Delete(id);
         _orderService.Commit();
+
+        if(payment != null)
+        {
+            _paymentService.Delete(payment.PaymentId);
+        }
+
+
         return RedirectToAction("Index", "Order");
     }
 
@@ -115,7 +137,7 @@ public class OrderController : Controller
             OrderId = id,
             StartTime = order.StartDate,
             EndTime = order.EndTime,
-            //UserName = _userService.GetById(order.UserId).FirstName + " " + _userService.GetById(order.UserId).LastName,
+            UserName = _userService.GetById(order.UserId).FirstName + " " + _userService.GetById(order.UserId).LastName,
             ModelName = _computerService.GetById(order.ComputerId).ModelName
 
         };
@@ -125,6 +147,7 @@ public class OrderController : Controller
         {
             Value = u.Email.ToString(),
             Text = u.FirstName + " " + u.LastName
+            
         }).ToList();
         (orderViewModel.Users[0], orderViewModel.Users[orderViewModel.Users.
             FindIndex(u => u.Text == orderViewModel.UserName)]) = (orderViewModel.Users[orderViewModel.Users.
@@ -142,17 +165,13 @@ public class OrderController : Controller
 
         return View(orderViewModel);
     }
+
     [HttpPost]
     public IActionResult Edit(OrderViewModel orderViewModel)
     {
         orderViewModel.State = orderViewModel.EndTime < DateTime.Now;
+        
 
-        //if (orderViewModel.StartTime < DateTime.Now
-        //    || orderViewModel.EndTime < orderViewModel.StartTime
-        //    || orderViewModel.EndTime > DateTime.Now)
-        //{
-        //   return View(orderViewModel);
-        //}
         orderViewModel.ComputerId = _computerService.FindByModelName(orderViewModel.ModelName);
         orderViewModel.UserId = _userService.FindByEmail(orderViewModel.Email);
 
@@ -162,7 +181,7 @@ public class OrderController : Controller
             StartDate = orderViewModel.StartTime,
             EndTime = orderViewModel.EndTime,
             State = orderViewModel.State,
-           // UserId = orderViewModel.UserId,
+            UserId = orderViewModel.UserId,
             ComputerId = orderViewModel.ComputerId
         };
 
@@ -170,4 +189,78 @@ public class OrderController : Controller
 
         return RedirectToAction("Index", "Order");
     }
+
+    [HttpPost]
+    public IActionResult InsertOrder(ComputerOrdersViewModel computerOrderViewModel)
+    {
+
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+        if (userId == null)
+            return NotFound();
+
+        var user = _userService.GetById(userId);
+
+        if(computerOrderViewModel.Order.StartDate == DateTime.MinValue || computerOrderViewModel.Order.EndTime == DateTime.MinValue)
+        {
+            return View("DateError");
+        }
+
+
+        if (computerOrderViewModel.Order.StartDate.Date > computerOrderViewModel.Order.EndTime.Date)
+        {
+            ModelState.AddModelError("", "Invalid Date Range");
+        }
+
+        foreach (var order in _orderService.GetAll())
+        {
+            if ((computerOrderViewModel.Order.StartDate.Date <= order.EndTime.Date) && (order.StartDate.Date <= computerOrderViewModel.Order.EndTime.Date))
+            {
+                ModelState.AddModelError("", "Date Range Overlaps");
+            }
+        }
+
+        var amount = _computerService.GetById(computerOrderViewModel.Computer.ComputerId).PriceForHour
+            * (computerOrderViewModel.Order.EndTime - computerOrderViewModel.Order.StartDate).Hours;
+
+        var newOrder = new Order
+        {
+            StartDate = computerOrderViewModel.Order.StartDate,
+            EndTime = computerOrderViewModel.Order.EndTime,
+            ComputerId = computerOrderViewModel.Computer.ComputerId,
+            UserId = userId
+        };
+
+        _orderService.Insert(newOrder);
+        newOrder = _orderService.GetById(newOrder.OrderId);
+
+        var newPayment = new Payment
+        {
+            Amount = amount,
+            PaymentType = computerOrderViewModel.Payment.PaymentType,
+            PaymentDate = DateTime.Now,
+            OrderId = newOrder.OrderId,
+    };
+        _paymentService.Insert(newPayment);
+
+        SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", 587);
+
+        var computer = _computerService.GetById(computerOrderViewModel.Computer.ComputerId);
+
+        smtpClient.Credentials = new System.Net.NetworkCredential("artem.protsenko2@gmail.com", "awlq lqdn gecy kbxq");
+        smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
+        smtpClient.EnableSsl = true;
+
+        MailMessage mail = new MailMessage();
+
+        mail.From = new MailAddress("artem.protsenko2@gmail.com");
+        mail.To.Add(new MailAddress($"{user.Email}"));
+        mail.Subject = "Creating new order";
+        mail.Body = $"You're ordere computer {computer.ModelName} " +
+            $"from {newOrder.StartDate} to {newOrder.EndTime} in our club \nPayment inforamtion: Payment type:{newPayment.PaymentDate} Type: {newPayment.PaymentType} Price {newPayment.Amount}";
+
+        smtpClient.Send(mail);
+
+        return RedirectToAction("Index","Home");
+    }
+
 }
